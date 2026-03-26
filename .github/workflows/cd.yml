@@ -22,3 +22,8 @@ jobs:
               run: npm ci # เร็วกว่า install - clean install
             - name: Build project
               run: npm run build
+            - name: Upload dist folder artifact
+              uses: actions/upload-artifact@v5
+              with:
+                name: dist-production
+                path: dist
