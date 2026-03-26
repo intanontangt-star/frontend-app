@@ -19,7 +19,7 @@ function App() {
           <h1>Hello Ja Eiei</h1>
           <h2>This is a subtitle</h2>
           <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
+            ฝนตกเปาะแปะ
           </p>
         </div>
         <button
