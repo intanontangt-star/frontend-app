@@ -18,8 +18,8 @@ function App() {
         <div>
           <h1>Hello Ja Eiei</h1>
           <h2>This is a subtitle</h2>
-          <p>
-            ฝนตกเปาะแปะ
+          <p style={{ fontSize: '10.25rem' }}>
+            Hello Github v2.0.0
           </p>
         </div>
         <button
