@@ -26,7 +26,7 @@ jobs:
         env:
             CONTAINER_NAME: ${{ github.actor }}
             SERVER_PORT: 7777 #HTTP://45.32.108.242:7777
-            DOCKER_IMAGE_URL: 'ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ github.ref_name }}'       
+            DOCKER_IMAGE_URL: 'ghcr.io/intanontangt-star/frontend-app:3.0.3'   #docker pull ghcr.io/intanontangt-star/frontend-app:3.0.3    
         steps:
             - name: Executing remote ssh using password to production server
               uses: appleboy/ssh-action@v1.2.5
