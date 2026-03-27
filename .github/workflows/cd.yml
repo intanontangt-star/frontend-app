@@ -47,3 +47,4 @@ jobs:
                 username: ${{ github.actor }}
                 reponame: ${{ github.event.repository.name }}
                 token: ${{ secrets.GITHUB_TOKEN }}
+                token: ${{ secrets.GITHUB_TOKEN }}
