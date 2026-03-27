@@ -1,17 +1,17 @@
-name: Build and Push Docker
+name: Build and Deploy Docker
 
 on:
   push:
     tags:
-      - '*.*.*' # Trigger on version tags like 1.0.0
+      - '*.*.*' #v1.0.0
 
 jobs:
   build-image-and-push-job:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v6
-        
-        - name: Build docjer image and push to Github Registry
+
+        - name: Build docker image and push to GitHub Registry
           uses: mr-smithers-excellent/docker-build-push@v6
           with:
             image: ${{ github.event.repository.name }}
@@ -20,25 +20,25 @@ jobs:
             password: ${{ secrets.GITHUB_TOKEN }}
 
   auto-deploy-docker-job:
-        runs-on: ubuntu-latest
-        needs: build-image-and-push-job # sequential jobs
-        environment: production
-        env:
-            CONTAINER_NAME: ${{ github.actor }}
-            SERVER_PORT: 7777 #HTTP://45.32.108.242:7777
-            DOCKER_IMAGE_URL: 'ghcr.io/intanontangt-star/frontend-app:3.0.3'   #docker pull ghcr.io/intanontangt-star/frontend-app:3.0.3    
-        steps:
-            - name: Executing remote ssh using password to production server
-              uses: appleboy/ssh-action@v1.2.5
-              with:
-                host: ${{ secrets.SERVER_IP }}
-                username: ${{ secrets.SERVER_USER }}
-                password: ${{ secrets.SERVER_PASSWORD }}
-                port: '22'
-                script: |
-                  docker -v
-                  docker logout ghcr.io
-                  docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}
-                  docker pull ${{ env.DOCKER_IMAGE_URL }}
-                  docker rm -f ${{ env.CONTAINER_NAME }} | true
-                  docker run --restart=always -d -p ${{ env.CONTAINER_NAME }} -p ${{ env.CONTAINER_NAME }} -p ${{ env.SERVER_PORT }}:80 ${{ env.DOCKER_IMAGE_URL }}
+    runs-on: ubuntu-latest
+    needs: build-image-and-push-job
+    environment: production
+    env:
+        CONTAINER_NAME: ${{ github.actor }}
+        SERVER_PORT: 7777 #http://45.32.108.242:7777
+        DOCKER_IMAGE_URL: 'ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ github.ref_name }}'
+    steps:
+    - name: Executing remote ssh using password to production server
+      uses: appleboy/ssh-action@v1.2.5
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USER }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        port: '22'
+        script: |
+          docker -v
+          docker logout ghcr.io
+          docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}
+          docker pull ${{ env.DOCKER_IMAGE_URL }}
+          docker rm -f ${{ env.CONTAINER_NAME }} | true
+          docker run --restart=always -d --name ${{ env.CONTAINER_NAME }} -p ${{ env.SERVER_PORT }}:80 ${{ env.DOCKER_IMAGE_URL }}
